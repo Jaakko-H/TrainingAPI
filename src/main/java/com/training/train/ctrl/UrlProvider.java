@@ -8,7 +8,8 @@ public class UrlProvider {
 
 	public UrlProvider() {
 		urls = new HashMap<String, String>();
-		urls.put("trainsUrl", "https://rata.digitraffic.fi/api/v1/live-trains/{0, number, integer}/");
+		urls.put("trainByNumberUrl", "https://rata.digitraffic.fi/api/v1/live-trains/{0, number, integer}");
+		urls.put("trainsByStationUrl", "https://rata.digitraffic.fi/api/v1/live-trains?station={0}");
 	}
 	
 	public String getUrl(String key) {
