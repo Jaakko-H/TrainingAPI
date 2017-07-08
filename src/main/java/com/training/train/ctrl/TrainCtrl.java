@@ -9,7 +9,7 @@ import com.training.train.model.Train;
 
 @RestController
 public class TrainCtrl {
-	@RequestMapping(path="/train/{number}", method=RequestMethod.GET)
+	@RequestMapping(path="/v1/trains/{number}", method=RequestMethod.GET)
 	public Train getTrain(@PathVariable int number) {
 		return null;
 	}

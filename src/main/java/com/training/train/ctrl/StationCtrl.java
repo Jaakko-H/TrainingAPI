@@ -9,7 +9,7 @@ import com.training.train.model.Station;
 
 @RestController
 public class StationCtrl {
-	@RequestMapping(path="/station/{stationShortCode}", method=RequestMethod.GET)
+	@RequestMapping(path="/v1/stations/{stationShortCode}", method=RequestMethod.GET)
 	public Station getStation(@PathVariable int stationShortCode) {
 		return null;
 	}
