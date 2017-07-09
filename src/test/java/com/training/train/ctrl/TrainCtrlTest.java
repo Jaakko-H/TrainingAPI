@@ -31,13 +31,8 @@ public class TrainCtrlTest {
 	@Mock
 	private RestTemplate mockTemplate;
 	
-	@Bean
-	public UrlProvider urlProvider() {
-		return new UrlProvider();
-	}
-	
 	@Before
-	public void Setup(UrlProvider urlProvider) {
+	public void Setup() {
 		this.mockMvc = MockMvcBuilders.standaloneSetup(this.ctrl).build();
 		
 //		Mockito.when(mockTemplate.getForObject(urlProvider.getUrl("trainsUrl"), Train.class))

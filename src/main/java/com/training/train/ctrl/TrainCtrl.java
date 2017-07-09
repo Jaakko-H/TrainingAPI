@@ -38,11 +38,6 @@ public class TrainCtrl {
 		return builder.build();
 	}
 	
-	@Bean
-	public UrlProvider urlProvider() {
-		return new UrlProvider();
-	}
-	
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(NumberFormatException.class)
 	public @ResponseBody BadNumberFormatMessage badNumberFormat(HttpServletRequest req, Exception e) {
@@ -66,8 +61,8 @@ public class TrainCtrl {
 	
 	@RequestMapping(path="/v1/train-numbers", method=RequestMethod.GET)
 	public long[] getTrainNumbersByStation(@RequestParam(required=true) String stationShortCode,
-			RestTemplate restTemplate, UrlProvider urlProvider) {
-		String url = MessageFormat.format(urlProvider.getUrl("trainsByStationUrl"), stationShortCode);
+			RestTemplate restTemplate) {
+		String url = MessageFormat.format(UrlMap.TRAINS_BY_STATION_URL, stationShortCode);
 		log.info("url=" + url);
 		try {
 			Train[] trains = restTemplate.getForObject(url, Train[].class);
@@ -85,11 +80,11 @@ public class TrainCtrl {
 	
 	@RequestMapping(path="/v1/trains/{trainNumber}", method=RequestMethod.GET, produces="application/json")
 	public ResponseEntity<Train> getTrain(@PathVariable long trainNumber, RestTemplate restTemplate,
-			UrlProvider urlProvider, HttpServletResponse response) throws Exception {
+			HttpServletResponse response) throws Exception {
 		NumberFormat format = NumberFormat.getIntegerInstance();
 		format.setGroupingUsed(false);
 		String numberStr = format.format(trainNumber);
-		String url = MessageFormat.format(urlProvider.getUrl("trainByNumberUrl"), numberStr);
+		String url = MessageFormat.format(UrlMap.TRAINS_BY_NUMBER_URL, numberStr);
 		log.info("url=" + url);
 		Train[] trains = new Train[0];
 		trains = restTemplate.getForObject(url, Train[].class);

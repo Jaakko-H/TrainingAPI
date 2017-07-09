@@ -26,13 +26,13 @@ public class StationCtrl {
 	}
 	
 	@Bean
-	public UrlProvider urlProvider() {
-		return new UrlProvider();
+	public UrlMap urlProvider() {
+		return new UrlMap();
 	}
 	
 	@RequestMapping(path="/v1/stations/{stationShortCode}", method=RequestMethod.GET)
 	public Station getStation(@PathVariable int stationShortCode,
-			RestTemplate restTemplate, UrlProvider urlProvider) {
+			RestTemplate restTemplate, UrlMap urlProvider) {
 		return null;
 	}
 }
