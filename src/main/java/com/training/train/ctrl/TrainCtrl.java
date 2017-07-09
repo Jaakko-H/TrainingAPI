@@ -34,6 +34,11 @@ public class TrainCtrl {
 	private static final Logger log = LoggerFactory.getLogger(TrainCtrl.class);
 	
 	@Bean
+	public RestTemplateBuilder restTemplateBuilder() {
+		return new RestTemplateBuilder();
+	}
+	
+	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {
 		return builder.build();
 	}
