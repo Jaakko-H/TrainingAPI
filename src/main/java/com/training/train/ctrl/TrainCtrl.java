@@ -43,6 +43,7 @@ public class TrainCtrl {
 		return builder.build();
 	}
 	
+	/* Handle exceptions with custom response messages. */
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(NumberFormatException.class)
 	public @ResponseBody BadNumberFormatMessage badNumberFormat(HttpServletRequest req, Exception e) {
@@ -64,6 +65,8 @@ public class TrainCtrl {
 		return new TrainNotFoundMessage(req.getRequestURL().toString());
 	}
 	
+	/* This method returns an array of numbers, thus it shall be
+	 * mapped respectively. */
 	@RequestMapping(path="/v1/train-numbers", method=RequestMethod.GET)
 	public long[] getTrainNumbersByStation(@RequestParam(required=true) String stationShortCode,
 			RestTemplate restTemplate) {
@@ -86,6 +89,8 @@ public class TrainCtrl {
 		return trainNumbers;
 	}
 	
+	/* This get-method for a single resource is mapped under the resource name.
+	 * In there it is mapped by it's own identifier. */
 	@RequestMapping(path="/v1/trains/{trainNumber}", method=RequestMethod.GET, produces="application/json")
 	public ResponseEntity<Train> getTrain(@PathVariable long trainNumber, RestTemplate restTemplate,
 			HttpServletResponse response) throws Exception {
