@@ -1,12 +1,10 @@
 package com.training.train.ctrl;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.NumberFormat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,15 +32,17 @@ public class TrainCtrl {
 	}
 	
 	@RequestMapping(path="/v1/train-numbers", method=RequestMethod.GET)
-	public int[] getTrainNumbersByStation(@RequestParam(required=true) String stationShortCode,
+	public long[] getTrainNumbersByStation(@RequestParam(required=true) String stationShortCode,
 			RestTemplate restTemplate, UrlProvider urlProvider) {
 		String url = MessageFormat.format(urlProvider.getUrl("trainsByStationUrl"), stationShortCode);
+		log.info("url=" + url);
 		try {
 			Train[] trains = restTemplate.getForObject(url, Train[].class);
-			int[] trainNumbers = new int[trains.length];
+			long[] trainNumbers = new long[trains.length];
 			for (int i = 0; i < trains.length; i++) {
 				trainNumbers[i] = trains[i].getTrainNumber();
 			}
+			log.info(trainNumbers.toString());
 			return trainNumbers;
 		} catch (Exception e) {
 			log.error(e.toString());
@@ -51,13 +51,15 @@ public class TrainCtrl {
 	}
 	
 	@RequestMapping(path="/v1/trains/{trainNumber}", method=RequestMethod.GET)
-	public Train getTrain(@PathVariable int trainNumber,
+	public Train getTrain(@PathVariable long trainNumber,
 			RestTemplate restTemplate, UrlProvider urlProvider) {
-		String url = MessageFormat.format(urlProvider.getUrl("trainByNumberUrl"), trainNumber);
+		NumberFormat format = NumberFormat.getIntegerInstance();
+		format.setGroupingUsed(false);
+		String numberStr = format.format(trainNumber);
+		String url = MessageFormat.format(urlProvider.getUrl("trainByNumberUrl"), numberStr);
+		log.info("url=" + url);
 		try {
-			log.info("foo");
 			Train[] trains = restTemplate.getForObject(url, Train[].class);
-			log.info("foo");
 			Train train = trains[0];
 			log.info(train.toString());
 			return train;

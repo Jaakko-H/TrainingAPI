@@ -8,7 +8,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Train {
 //	@Getter @Setter
-	private int trainNumber;
+	private long trainNumber;
 //	@Getter @Setter
 	private String trainCategory;
 	
@@ -18,7 +18,7 @@ public class Train {
 		this.trainCategory = trainCategory;
 	}
 	
-	public int getTrainNumber() {
+	public long getTrainNumber() {
 		return trainNumber;
 	}
 	public void setTrainNumber(int trainNumber) {
