@@ -2,14 +2,9 @@ package com.training.train.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Train {
-//	@Getter @Setter
 	private long trainNumber;
-//	@Getter @Setter
 	private String trainCategory;
 	
 	public Train() {}
