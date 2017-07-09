@@ -24,6 +24,9 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.training.train.model.Train;
+import com.training.train.msg.BadNumberFormatMessage;
+import com.training.train.msg.ServiceUnavailableMessage;
+import com.training.train.msg.TrainNotFoundMessage;
 
 @RestController
 public class TrainCtrl {
@@ -40,16 +43,25 @@ public class TrainCtrl {
 		return new UrlProvider();
 	}
 	
-	@ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE,
-			reason="Service temporarily unavailable. Please, try again later.")
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(NumberFormatException.class)
+	public @ResponseBody BadNumberFormatMessage badNumberFormat(HttpServletRequest req, Exception e) {
+		log.error(e.toString());
+		return new BadNumberFormatMessage(req.getRequestURL().toString());
+	}
+	
+	@ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
 	@ExceptionHandler(RestClientException.class)
-	public void noServiceAvailable() {}
+	public @ResponseBody ServiceUnavailableMessage serviceUnavailable(HttpServletRequest req, Exception e) {
+		log.error(e.toString());
+		return new ServiceUnavailableMessage(req.getRequestURL().toString());
+	}
 	
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ExceptionHandler(ArrayIndexOutOfBoundsException.class)
 	public @ResponseBody TrainNotFoundMessage noTrainFound(HttpServletRequest req, Exception e) {
 		log.error(e.toString());
-		return new TrainNotFoundMessage(req.getRequestURL().toString(), e);
+		return new TrainNotFoundMessage(req.getRequestURL().toString());
 	}
 	
 	@RequestMapping(path="/v1/train-numbers", method=RequestMethod.GET)
