@@ -67,47 +67,50 @@ public class TrainCtrl {
 	@RequestMapping(path="/v1/train-numbers", method=RequestMethod.GET)
 	public long[] getTrainNumbersByStation(@RequestParam(required=true) String stationShortCode,
 			RestTemplate restTemplate) {
+		//Inject request parameter into the url to be used by RestTemplate
 		String url = MessageFormat.format(UrlMap.TRAINS_BY_STATION_URL, stationShortCode);
+		
 		log.info("url=" + url);
-		try {
-			Train[] trains = restTemplate.getForObject(url, Train[].class);
-			long[] trainNumbers = new long[trains.length];
-			for (int i = 0; i < trains.length; i++) {
-				trainNumbers[i] = trains[i].getTrainNumber();
-			}
-			log.info(trainNumbers.toString());
-			return trainNumbers;
-		} catch (Exception e) {
-			log.error(e.toString());
-			return null;
+		//Get json objects from external rest api and convert them into java-objects
+		Train[] trains = restTemplate.getForObject(url, Train[].class);
+		
+		//Initialize response with new array of numbers
+		long[] trainNumbers = new long[trains.length];
+		
+		//Assign the trains' train numbers into the response array
+		for (int i = 0; i < trains.length; i++) {
+			trainNumbers[i] = trains[i].getTrainNumber();
 		}
+		
+		log.info(trainNumbers.toString());
+		return trainNumbers;
 	}
 	
 	@RequestMapping(path="/v1/trains/{trainNumber}", method=RequestMethod.GET, produces="application/json")
 	public ResponseEntity<Train> getTrain(@PathVariable long trainNumber, RestTemplate restTemplate,
 			HttpServletResponse response) throws Exception {
+		//Get the current default number format
 		NumberFormat format = NumberFormat.getIntegerInstance();
+		
+		//Set the grouping of the format to false, so that large numbers, such as 1000,
+		//don't get formatted to 1,000 for example
 		format.setGroupingUsed(false);
+		
+		//Process request parameter with the new format and make it a string
 		String numberStr = format.format(trainNumber);
+		
+		//Inject request parameter into the url to be used by RestTemplate
 		String url = MessageFormat.format(UrlMap.TRAINS_BY_NUMBER_URL, numberStr);
+		
 		log.info("url=" + url);
-		Train[] trains = new Train[0];
-		trains = restTemplate.getForObject(url, Train[].class);
-//		} catch(Exception e) {
-//			log.error(e.toString());
-////			return e.toString();
-//			return new ResponseEntity<Train>(HttpStatus.SERVICE_UNAVAILABLE);
-//		}
-//		if (trains.length == 0) {
-//			String result = "No train was found with the given id.";
-//			log.info(result);
-//			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-////			return response.toString();
-//			return new ResponseEntity<Train>(HttpStatus.NOT_FOUND);
-//		}
+		//Get json objects from external rest api and convert them into java-objects
+		Train[] trains = restTemplate.getForObject(url, Train[].class);
+		
+		//Get the first element of the json-array
+				//The length of the array should never be more than 1 for singular resources
 		Train train = trains[0];
+		
 		log.info(train.toString());
-//		return train.toString();
 		return new ResponseEntity<Train>(train, HttpStatus.OK);
 	}
 }
