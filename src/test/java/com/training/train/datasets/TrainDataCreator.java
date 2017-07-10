@@ -3,6 +3,7 @@ package com.training.train.datasets;
 import java.text.MessageFormat;
 
 import org.mockito.Mockito;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.training.train.ctrl.UrlMap;
@@ -15,12 +16,15 @@ public class TrainDataCreator {
 				Train[].class)).thenReturn(TrainDataSet.train1);
 		Mockito.when(mockTemplate.getForObject(
 				MessageFormat.format(UrlMap.TRAINS_BY_STATION_URL, "HKI"),
-				int[].class)).thenReturn(TrainDataSet.TRAIN_NUMBERS_DATA_SET);
+				Train[].class)).thenReturn(TrainDataSet.TRAIN_DATA_SET);
 		Mockito.when(mockTemplate.getForObject(
 				MessageFormat.format(UrlMap.TRAINS_BY_NUMBER_URL, "2"),
 				Train[].class)).thenReturn(new Train[0]);
 		Mockito.when(mockTemplate.getForObject(
 				MessageFormat.format(UrlMap.TRAINS_BY_STATION_URL, "FOO"),
-				int[].class)).thenReturn(new int[0]);
+				Train[].class)).thenReturn(new Train[0]);
+		Mockito.when(mockTemplate.getForObject(
+				MessageFormat.format(UrlMap.TRAINS_BY_NUMBER_URL, "503"),
+				Train[].class)).thenThrow(new RestClientException(null));
 	}
 }
