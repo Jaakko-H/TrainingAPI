@@ -2,6 +2,8 @@ package com.training.train.ctrl;
 
 import java.text.MessageFormat;
 
+import javax.inject.Inject;
+
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.test.context.ContextConfiguration;
@@ -26,23 +29,23 @@ import org.springframework.web.context.WebApplicationContext;
 import com.training.train.datasets.TrainDataCreator;
 import com.training.train.model.Train;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
 @WebAppConfiguration
 public class TrainCtrlTest {
 
+	@Inject
 	private MockMvc mockMvc;
 	@InjectMocks
 	private TrainCtrl ctrl;
 	@Mock
 	private RestTemplate mockTemplate;
-	@Mock
-	private RestTemplateBuilder builder;
 	
 	@Before
 	public void Setup() {
 		this.mockMvc = MockMvcBuilders.standaloneSetup(this.ctrl).build();
+		System.out.println("foo");
 		TrainDataCreator.create(mockTemplate);
 	}
 	
