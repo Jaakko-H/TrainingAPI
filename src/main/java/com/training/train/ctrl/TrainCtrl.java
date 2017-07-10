@@ -2,6 +2,7 @@ package com.training.train.ctrl;
 
 import java.text.MessageFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -82,10 +83,8 @@ public class TrainCtrl {
 		//Initialize response with new array of numbers
 		long[] trainNumbers = new long[trains.length];
 		
-		//Assign the trains' train numbers into the response array
-		for (int i = 0; i < trains.length; i++) {
-			trainNumbers[i] = trains[i].getTrainNumber();
-		}
+		//Assign the trains' train numbers into the response array using lambda expression
+		trainNumbers = Arrays.stream(trains).mapToLong(t -> t.getTrainNumber()).toArray();;
 		
 		log.info(trainNumbers.toString());
 		return trainNumbers;
