@@ -34,20 +34,23 @@ public class TrainCtrlTest {
 	@Mock
 	private RestTemplate mockTemplate;
 	
+	/* Setup test environment */
 	@Before
 	public void Setup() {
 		this.mockMvc = MockMvcBuilders.standaloneSetup(this.ctrl).build();
-		System.out.println("foo");
 		TrainDataCreator.create(mockTemplate);
 	}
 	
 	@Test
 	public void testGetTrain() throws Exception {
+		//Create a request
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v1/trains/1");
+		//Execute the request and assert that the results match the expectations
 		mockMvc.perform(requestBuilder)
 						.andExpect(MockMvcResultMatchers.status().isOk())
 						.andExpect(MockMvcResultMatchers.jsonPath("$.trainNumber", Matchers.is(1)))
 						.andExpect(MockMvcResultMatchers.jsonPath("$.trainCategory", Matchers.is("foo")));
+		//Verify that the mock data source has been called
 		Mockito.verify(mockTemplate, Mockito.times(1)).getForObject(
 				MessageFormat.format(UrlMap.TRAINS_BY_NUMBER_URL, "1"), Train[].class);
 	}
