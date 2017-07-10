@@ -3,6 +3,7 @@ package com.training.train.ctrl;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,14 +34,16 @@ public class TrainCtrl {
 	
 	private static final Logger log = LoggerFactory.getLogger(TrainCtrl.class);
 	
-	@Bean
-	public RestTemplateBuilder restTemplateBuilder() {
-		return new RestTemplateBuilder();
-	}
+	@Inject
+	private RestTemplate restTemplate;
 	
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {
 		return builder.build();
+	}
+	
+	public void setRestTemplate(RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
 	}
 	
 	/* Handle exceptions with custom response messages. */
@@ -68,8 +71,7 @@ public class TrainCtrl {
 	/* This method returns an array of numbers, thus it shall be
 	 * mapped respectively. */
 	@RequestMapping(path="/v1/train-numbers", method=RequestMethod.GET)
-	public long[] getTrainNumbersByStation(@RequestParam(required=true) String stationShortCode,
-			RestTemplate restTemplate) {
+	public long[] getTrainNumbersByStation(@RequestParam(required=true) String stationShortCode) {
 		//Inject request parameter into the url to be used by RestTemplate
 		String url = MessageFormat.format(UrlMap.TRAINS_BY_STATION_URL, stationShortCode);
 		
@@ -92,7 +94,7 @@ public class TrainCtrl {
 	/* This get-method for a single resource is mapped under the resource name.
 	 * In there it is mapped by it's own identifier. */
 	@RequestMapping(path="/v1/trains/{trainNumber}", method=RequestMethod.GET, produces="application/json")
-	public ResponseEntity<Train> getTrain(@PathVariable long trainNumber, RestTemplate restTemplate,
+	public ResponseEntity<Train> getTrain(@PathVariable long trainNumber,
 			HttpServletResponse response) throws Exception {
 		//Get the current default number format
 		NumberFormat format = NumberFormat.getIntegerInstance();
